@@ -1,0 +1,1 @@
+enum AppPages { home, profile }
