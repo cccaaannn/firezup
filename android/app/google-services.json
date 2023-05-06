@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "965072151714",
+    "project_id": "firezup",
+    "storage_bucket": "firezup.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:965072151714:android:3ebe73c820703d9e23a3fb",
+        "android_client_info": {
+          "package_name": "com.kurtcan.firezup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "965072151714-c63ekp234g0h1rk06s4qfcsehf8no17a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0aUQRTZWnFKNl_CCXGEFjwR6IUCBt_ZU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "965072151714-c63ekp234g0h1rk06s4qfcsehf8no17a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
