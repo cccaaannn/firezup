@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firezup/services/user_service.dart';
-
 import 'package:firezup/data/app_user.dart';
 import 'package:firezup/data/optional.dart';
 import 'package:firezup/utils/keystore_utils.dart';
