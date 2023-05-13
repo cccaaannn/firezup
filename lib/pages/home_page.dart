@@ -3,17 +3,14 @@ import 'package:firezup/data/app_user.dart';
 import 'package:firezup/data/message.dart';
 import 'package:firezup/data/optional.dart';
 import 'package:firezup/services/group_service.dart';
-import 'package:firezup/services/snackbar_service.dart';
 import 'package:firezup/services/user_service.dart';
 import 'package:firezup/shared/pages.dart';
 import 'package:firezup/widgets/app_drawer.dart';
 import 'package:firezup/widgets/create_group_modal.dart';
+import 'package:firezup/widgets/empty_home_placeholder.dart';
 import 'package:firezup/widgets/group_tile.dart';
 import 'package:firezup/widgets/loading.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,8 +24,8 @@ class _HomePageState extends State<HomePage> {
   final UserService userService = UserService();
 
   Optional<AppUser> userOptional = Optional(null);
-  Stream? groupsSnapshot;
-  bool loading = false;
+  Stream<QuerySnapshot<Object?>>? groupsSnapshot;
+  bool isEmpty = true;
 
   @override
   void initState() {
@@ -61,18 +58,20 @@ class _HomePageState extends State<HomePage> {
       drawer:
           AppDrawer(userOptional: userOptional, selectedPage: AppPages.home),
       body: groupListStream(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          createGroupModal(context);
-        },
-        elevation: 0,
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        child: const Icon(
-          Icons.group_add,
-          color: Colors.white,
-          size: 30,
-        ),
-      ),
+      floatingActionButton: isEmpty
+          ? null
+          : FloatingActionButton(
+              onPressed: () {
+                createGroupModal(context);
+              },
+              elevation: 0,
+              backgroundColor: Theme.of(context).colorScheme.secondary,
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
     );
   }
 
@@ -91,8 +90,11 @@ class _HomePageState extends State<HomePage> {
         }
 
         if (docs.length == 0) {
-          return const Loading();
+          isEmpty = true;
+          return const EmptyHomePlaceholder();
         }
+
+        isEmpty = false;
 
         return ListView.builder(
           itemCount: docs.length,
@@ -106,14 +108,16 @@ class _HomePageState extends State<HomePage> {
             Message? lastMessage;
             if (lastMessageDetail.isNotEmpty) {
               lastMessage = Message(
-                  null,
-                  "${lastMessageDetail['content']}",
-                  "${lastMessageDetail['owner']}",
-                  lastMessageDetail['timestamp']);
+                "${lastMessageDetail['id']}",
+                "${lastMessageDetail['content']}",
+                "${lastMessageDetail['owner']}",
+                lastMessageDetail['timestamp'],
+              );
             }
             Optional<Message> lastMessageOptional = Optional(lastMessage);
 
             return GroupTile(
+              groupId: docs[reverseIndex].data()["id"],
               groupName: docs[reverseIndex].data()["name"],
               lastMessageOptional: lastMessageOptional,
             );
@@ -125,10 +129,11 @@ class _HomePageState extends State<HomePage> {
 
   createGroupModal(BuildContext context) {
     showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (context) {
-          return const CreateGroupModal();
-        });
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return const CreateGroupModal();
+      },
+    );
   }
 }
