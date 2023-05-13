@@ -35,6 +35,15 @@ class GroupService {
         .snapshots();
   }
 
+  Future<Stream<QuerySnapshot<Object?>>> getGroupMessagesSnapshot(
+      String groupId) async {
+    return groupCollection
+        .doc(groupId)
+        .collection("messages")
+        .orderBy("timestamp")
+        .snapshots();
+  }
+
   Future<Optional<Group>> createGroup(String groupName) async {
     String? uid = FirebaseAuth.instance.currentUser?.uid;
 
@@ -71,18 +80,32 @@ class GroupService {
     return Optional(group);
   }
 
-  Future<Optional<AppUser>> getUserById(String docId) async {
-    DocumentReference userDoc = userCollection.doc(docId);
-
-    DocumentSnapshot<Object?> userDocSnapshot = await userDoc.get();
-
-    if (!userDocSnapshot.exists) {
-      return Optional(null);
+  Future sendMessage(String groupId, String messageContent) async {
+    Optional<AppUser> userOptional = await userService.getActiveUser();
+    if (!userOptional.exists()) {
+      return;
     }
+    AppUser user = userOptional.get()!;
 
-    AppUser appUser = AppUser(userDocSnapshot.id, userDocSnapshot.get("email"),
-        userDocSnapshot.get("username"));
+    CollectionReference<Object?> newMessageRef = groupCollection
+        .doc(groupId)
+        .collection(DBCollections.messagesCollectionName);
+    await newMessageRef.add({
+      "id": newMessageRef.id,
+      "content": messageContent,
+      "owner": "${user.id}_${user.username}",
+      "timestamp": FieldValue.serverTimestamp()
+    });
 
-    return Optional(appUser);
+    await groupCollection.doc(groupId).update({
+      "lastMessage": {
+        "id": newMessageRef.id,
+        "content": messageContent,
+        "owner": "${user.id}_${user.username}",
+        "timestamp": FieldValue.serverTimestamp()
+      }
+    });
+
+    return;
   }
 }
