@@ -6,5 +6,5 @@ class Message {
   String? id;
   String content;
   String owner;
-  Timestamp timestamp;
+  Timestamp? timestamp;
 }
