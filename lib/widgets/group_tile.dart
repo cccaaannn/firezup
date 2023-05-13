@@ -6,11 +6,15 @@ import 'package:firezup/utils/date_utils.dart';
 import 'package:flutter/material.dart';
 
 class GroupTile extends StatefulWidget {
+  final String groupId;
   final String groupName;
   final Optional<Message> lastMessageOptional;
 
   const GroupTile(
-      {Key? key, required this.groupName, required this.lastMessageOptional})
+      {Key? key,
+      required this.groupId,
+      required this.groupName,
+      required this.lastMessageOptional})
       : super(key: key);
 
   @override
@@ -22,11 +26,8 @@ class _GroupTileState extends State<GroupTile> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        NavigationService(context).next(const ChatPage());
-        //   ChatPage(
-        //     group: widget.group,
-        //     userName: widget.userName,
-        //   ),
+        NavigationService(context).next(
+            ChatPage(groupId: widget.groupId, groupName: widget.groupName));
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
