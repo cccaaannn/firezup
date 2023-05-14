@@ -3,6 +3,7 @@ import 'package:firezup/data/optional.dart';
 import 'package:firezup/pages/chat_page.dart';
 import 'package:firezup/services/navigation_service.dart';
 import 'package:firezup/utils/date_utils.dart';
+import 'package:firezup/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 
 class GroupTile extends StatefulWidget {
@@ -59,7 +60,8 @@ class _GroupTileState extends State<GroupTile> {
           subtitle: widget.lastMessageOptional.exists()
               ? Text.rich(
                   TextSpan(
-                    text: "${widget.lastMessageOptional.get()?.owner}: ",
+                    text:
+                        "${StringUtils.splitName(widget.lastMessageOptional.get()?.owner)}: ",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 13,
