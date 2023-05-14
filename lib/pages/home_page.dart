@@ -10,6 +10,7 @@ import 'package:firezup/widgets/create_group_modal.dart';
 import 'package:firezup/widgets/empty_home_placeholder.dart';
 import 'package:firezup/widgets/group_tile.dart';
 import 'package:firezup/widgets/loading.dart';
+import 'package:firezup/widgets/search_group_modal.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -46,6 +47,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                searchGroupModal(context);
+              },
+              icon: const Icon(
+                Icons.search,
+              ))
+        ],
         elevation: 0,
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
@@ -133,6 +143,16 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return const CreateGroupModal();
+      },
+    );
+  }
+
+  searchGroupModal(BuildContext context) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return const SearchGroupModal();
       },
     );
   }
