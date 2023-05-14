@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Group {
-  Group(this.id, this.name, this.timestamp, this.members);
+class GroupSearch {
+  GroupSearch(this.id, this.name, this.timestamp, this.joined);
 
   String id;
   String name;
   Timestamp timestamp;
-  List<String> members;
+  bool joined;
 }
