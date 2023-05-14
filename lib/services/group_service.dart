@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firezup/data/group.dart';
+import 'package:firezup/data/group_search.dart';
 import 'package:firezup/services/user_service.dart';
 import 'package:firezup/shared/db_collections.dart';
 import 'package:firezup/data/app_user.dart';
@@ -74,8 +75,93 @@ class GroupService {
 
     Timestamp createdTime = (await documentReference.get()).get("timestamp");
 
-    Group group = Group(documentReference.id, groupName, createdTime, null,
-        List.empty(), List.empty());
+    Group group =
+        Group(documentReference.id, groupName, createdTime, List.empty());
+
+    return Optional(group);
+  }
+
+  Future<bool> leaveGroup(String groupId) async {
+    Optional<AppUser> userOptional = await userService.getActiveUser();
+    if (!userOptional.exists()) {
+      return false;
+    }
+    AppUser user = userOptional.get()!;
+
+    DocumentReference<Object?> groupDoc = groupCollection.doc(groupId);
+    DocumentSnapshot<Object?> groupObj = await groupDoc.get();
+    if (!groupObj.exists) {
+      return false;
+    }
+
+    Map<String, dynamic> groupMap = groupObj.data() as Map<String, dynamic>;
+    String groupName = groupMap["name"];
+
+    await groupDoc.update({
+      "members": FieldValue.arrayRemove(["${user.id}_${user.username}"])
+    });
+
+    await userCollection.doc(user.id).update({
+      "groups": FieldValue.arrayRemove(["${groupId}_$groupName"])
+    });
+
+    return true;
+  }
+
+  Future<bool> joinGroup(String groupId) async {
+    Optional<AppUser> userOptional = await userService.getActiveUser();
+    if (!userOptional.exists()) {
+      return false;
+    }
+    AppUser user = userOptional.get()!;
+
+    DocumentReference<Object?> groupDoc = groupCollection.doc(groupId);
+    DocumentSnapshot<Object?> groupObj = await groupDoc.get();
+    if (!groupObj.exists) {
+      return false;
+    }
+
+    Map<String, dynamic> groupMap = groupObj.data() as Map<String, dynamic>;
+    String groupName = groupMap["name"];
+
+    await groupDoc.update({
+      "members": FieldValue.arrayUnion(["${user.id}_${user.username}"])
+    });
+
+    await userCollection.doc(user.id).update({
+      "groups": FieldValue.arrayUnion(["${groupId}_$groupName"])
+    });
+
+    return true;
+  }
+
+  Future<Optional<GroupSearch>> searchByName(String groupName) async {
+    Optional<AppUser> userOptional = await userService.getActiveUser();
+    if (!userOptional.exists()) {
+      return Optional(null);
+    }
+    AppUser user = userOptional.get()!;
+
+    QuerySnapshot<Object?> snapshot =
+        await groupCollection.where("name", isEqualTo: groupName).get();
+
+    if (snapshot.docs.isEmpty) {
+      return Optional(null);
+    }
+    if (snapshot.docs[0].data() == null) {
+      return Optional(null);
+    }
+    Map<String, dynamic> groupMap =
+        snapshot.docs[0].data() as Map<String, dynamic>;
+
+    bool contains = groupMap["members"].contains("${user.id}_${user.username}");
+
+    GroupSearch group = GroupSearch(
+      "${groupMap['id']}",
+      "${groupMap['name']}",
+      groupMap['timestamp'],
+      !contains,
+    );
 
     return Optional(group);
   }
