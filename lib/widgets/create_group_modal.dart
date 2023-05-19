@@ -51,7 +51,7 @@ class _CreateGroupModalState extends State<CreateGroupModal> {
                         // check tha validation
                         validator: (val) {
                           return ValidationUtils()
-                              .requiredString(val, "Group name")
+                              .hasSpecialCharacters(val, "Group name")
                               .getMessage();
                         },
                       ),
