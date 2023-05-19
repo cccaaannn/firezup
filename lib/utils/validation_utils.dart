@@ -6,10 +6,21 @@ class ValidationUtils {
   final RegExp _uppercaseRegMatcher = RegExp(r'[A-Z]');
   final RegExp _lowercaseRegMatcher = RegExp(r'[a-z]');
   final RegExp _numberRegMatcher = RegExp(r'[0-9]');
+  final RegExp _regularCharsRegMatcher = RegExp(r'[^A-Za-z0-9]');
 
   ValidationResult requiredString(String? val, String fieldName) {
     if (val!.isEmpty) {
       return ValidationResult(false, "$fieldName can not be empty");
+    }
+    return ValidationResult(true, null);
+  }
+
+  ValidationResult hasSpecialCharacters(String? val, String fieldName) {
+    if (val!.isEmpty) {
+      return ValidationResult(false, "$fieldName can not be empty");
+    }
+    if (val.contains(_regularCharsRegMatcher)) {
+      return ValidationResult(false, "Special characters not allowed");
     }
     return ValidationResult(true, null);
   }
