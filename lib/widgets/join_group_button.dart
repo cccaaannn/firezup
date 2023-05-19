@@ -2,9 +2,9 @@ import 'package:firezup/data/group_search.dart';
 import 'package:flutter/material.dart';
 
 class JoinGroupButton extends StatefulWidget {
-  final GroupSearch? groupSearch;
-  final Function joinGroup;
-  final Function leaveGroup;
+  final GroupSearch groupSearch;
+  final void Function(GroupSearch) joinGroup;
+  final void Function(GroupSearch) leaveGroup;
 
   const JoinGroupButton(
       {super.key,
@@ -20,10 +20,10 @@ class _JoinGroupButtonState extends State<JoinGroupButton> {
   @override
   Widget build(BuildContext context) {
     return OutlinedButton(
-      onPressed: widget.groupSearch!.joined
-          ? () => widget.joinGroup()
-          : () => widget.leaveGroup(),
-      style: widget.groupSearch!.joined
+      onPressed: widget.groupSearch.joined
+          ? () => widget.joinGroup(widget.groupSearch)
+          : () => widget.leaveGroup(widget.groupSearch),
+      style: widget.groupSearch.joined
           ? OutlinedButton.styleFrom(
               foregroundColor: Theme.of(context).primaryColor,
               side: BorderSide(
@@ -39,8 +39,8 @@ class _JoinGroupButtonState extends State<JoinGroupButton> {
               ),
             ),
       child: Text(
-        widget.groupSearch!.joined ? "Join" : "Leave",
-        style: widget.groupSearch!.joined
+        widget.groupSearch.joined ? "Join" : "Leave",
+        style: widget.groupSearch.joined
             ? TextStyle(
                 color: Theme.of(context).primaryColor,
               )

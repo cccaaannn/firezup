@@ -26,7 +26,6 @@ class _HomePageState extends State<HomePage> {
 
   Optional<AppUser> userOptional = Optional(null);
   Stream<QuerySnapshot<Object?>>? groupsSnapshot;
-  bool isEmpty = true;
 
   @override
   void initState() {
@@ -68,20 +67,18 @@ class _HomePageState extends State<HomePage> {
       drawer:
           AppDrawer(userOptional: userOptional, selectedPage: AppPages.home),
       body: groupListStream(),
-      floatingActionButton: isEmpty
-          ? null
-          : FloatingActionButton(
-              onPressed: () {
-                createGroupModal(context);
-              },
-              elevation: 0,
-              backgroundColor: Theme.of(context).colorScheme.secondary,
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-                size: 30,
-              ),
-            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          createGroupModal(context);
+        },
+        elevation: 0,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 30,
+        ),
+      ),
     );
   }
 
@@ -100,11 +97,8 @@ class _HomePageState extends State<HomePage> {
         }
 
         if (docs.length == 0) {
-          isEmpty = true;
           return const EmptyHomePlaceholder();
         }
-
-        isEmpty = false;
 
         return ListView.builder(
           itemCount: docs.length,
@@ -112,16 +106,16 @@ class _HomePageState extends State<HomePage> {
             int reverseIndex = docs.length - index - 1;
 
             // Get last message detail
-            Map<String, dynamic> lastMessageDetail =
+            Map<String, dynamic> lastMessageMap =
                 docs[reverseIndex].data()["lastMessage"];
 
             Message? lastMessage;
-            if (lastMessageDetail.isNotEmpty) {
+            if (lastMessageMap.isNotEmpty) {
               lastMessage = Message(
-                "${lastMessageDetail['id']}",
-                "${lastMessageDetail['content']}",
-                "${lastMessageDetail['owner']}",
-                lastMessageDetail['timestamp'],
+                "${lastMessageMap['id']}",
+                "${lastMessageMap['content']}",
+                "${lastMessageMap['owner']}",
+                lastMessageMap['timestamp'],
               );
             }
             Optional<Message> lastMessageOptional = Optional(lastMessage);

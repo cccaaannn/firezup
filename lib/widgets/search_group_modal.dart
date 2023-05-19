@@ -1,6 +1,6 @@
 import 'package:firezup/data/group_search.dart';
-import 'package:firezup/data/optional.dart';
 import 'package:firezup/services/group_service.dart';
+import 'package:firezup/utils/string_utils.dart';
 import 'package:firezup/utils/validation_utils.dart';
 import 'package:firezup/widgets/join_group_button.dart';
 import 'package:firezup/widgets/loading.dart';
@@ -18,7 +18,7 @@ class _SearchGroupModalState extends State<SearchGroupModal> {
   final formKey = GlobalKey<FormState>();
   bool loading = false;
   bool isInitialLoad = true;
-  GroupSearch? group;
+  List<GroupSearch> groupSearchList = List.empty(growable: true);
   String groupName = "";
 
   GroupService groupService = GroupService();
@@ -58,40 +58,45 @@ class _SearchGroupModalState extends State<SearchGroupModal> {
                         },
                       ),
                     ),
-                    group != null
-                        ? Container(
-                            alignment: Alignment.centerLeft,
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                radius: 20,
-                                backgroundColor: Theme.of(context).primaryColor,
-                                child: Text(
-                                  group!.name.substring(0, 1).toUpperCase(),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                              title: Row(
-                                children: [
-                                  Text(
-                                    group!.name,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
+                    groupSearchList.isNotEmpty
+                        ? Column(
+                            children: groupSearchList.map(
+                              (groupSearch) {
+                                return Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: ListTile(
+                                    contentPadding: EdgeInsets.zero,
+                                    leading: CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor:
+                                          Theme.of(context).primaryColor,
+                                      child: Text(
+                                        groupSearch.name
+                                            .substring(0, 1)
+                                            .toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                    title: Text(
+                                      groupSearch.name,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                      "owner: ${StringUtils.splitName(groupSearch.owner)}",
+                                    ),
+                                    trailing: JoinGroupButton(
+                                      groupSearch: groupSearch,
+                                      joinGroup: joinGroup,
+                                      leaveGroup: leaveGroup,
+                                    ),
                                   ),
-                                  const Spacer(),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  JoinGroupButton(
-                                    groupSearch: group,
-                                    joinGroup: joinGroup,
-                                    leaveGroup: leaveGroup,
-                                  ),
-                                ],
-                              ),
-                            ),
+                                );
+                              },
+                            ).toList(),
                           )
                         : Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -145,53 +150,39 @@ class _SearchGroupModalState extends State<SearchGroupModal> {
       loading = true;
       isInitialLoad = false;
     });
-    Optional<GroupSearch> groupOptional =
+
+    List<GroupSearch> groupSearchListTemp =
         await groupService.searchByName(groupName);
-    setState(() => loading = false);
 
-    if (!groupOptional.exists()) {
-      setState(() => group = null);
-      return;
-    }
-
-    setState(() => group = groupOptional.get());
+    setState(() {
+      groupSearchList = groupSearchListTemp;
+      loading = false;
+    });
   }
 
-  joinGroup() async {
-    if (group == null) {
-      return;
-    }
-
+  void joinGroup(GroupSearch groupSearch) async {
     setState(() => loading = true);
-    await groupService.joinGroup(group!.id);
-    Optional<GroupSearch> groupOptional =
+    await groupService.joinGroup(groupSearch.id);
+
+    List<GroupSearch> groupSearchListTemp =
         await groupService.searchByName(groupName);
-    setState(() => loading = false);
 
-    if (!groupOptional.exists()) {
-      setState(() => group = null);
-      return;
-    }
-
-    setState(() => group = groupOptional.get());
+    setState(() {
+      groupSearchList = groupSearchListTemp;
+      loading = false;
+    });
   }
 
-  leaveGroup() async {
-    if (group == null) {
-      return;
-    }
-
+  void leaveGroup(GroupSearch groupSearch) async {
     setState(() => loading = true);
-    await groupService.leaveGroup(group!.id);
-    Optional<GroupSearch> groupOptional =
+    await groupService.leaveGroup(groupSearch.id);
+
+    List<GroupSearch> groupSearchListTemp =
         await groupService.searchByName(groupName);
-    setState(() => loading = false);
 
-    if (!groupOptional.exists()) {
-      setState(() => group = null);
-      return;
-    }
-
-    setState(() => group = groupOptional.get());
+    setState(() {
+      groupSearchList = groupSearchListTemp;
+      loading = false;
+    });
   }
 }

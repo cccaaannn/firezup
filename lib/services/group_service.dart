@@ -58,13 +58,15 @@ class GroupService {
       return Optional(null);
     }
     AppUser user = userOptional.get()!;
+    String owner = "${uid}_${user.username}";
 
     DocumentReference documentReference = await groupCollection.add({
       "id": "",
       "name": groupName,
       "timestamp": FieldValue.serverTimestamp(),
       "lastMessage": {},
-      "members": ["${uid}_${user.username}"]
+      "members": [owner],
+      "owner": owner
     });
 
     await documentReference.update({"id": documentReference.id});
@@ -75,8 +77,13 @@ class GroupService {
 
     Timestamp createdTime = (await documentReference.get()).get("timestamp");
 
-    Group group =
-        Group(documentReference.id, groupName, createdTime, List.empty());
+    Group group = Group(
+      documentReference.id,
+      groupName,
+      createdTime,
+      List.empty(),
+      owner,
+    );
 
     return Optional(group);
   }
@@ -135,10 +142,12 @@ class GroupService {
     return true;
   }
 
-  Future<Optional<GroupSearch>> searchByName(String groupName) async {
+  Future<List<GroupSearch>> searchByName(String groupName) async {
+    List<GroupSearch> groupSearchList = List.empty(growable: true);
+
     Optional<AppUser> userOptional = await userService.getActiveUser();
     if (!userOptional.exists()) {
-      return Optional(null);
+      return groupSearchList;
     }
     AppUser user = userOptional.get()!;
 
@@ -146,24 +155,32 @@ class GroupService {
         await groupCollection.where("name", isEqualTo: groupName).get();
 
     if (snapshot.docs.isEmpty) {
-      return Optional(null);
+      return groupSearchList;
     }
     if (snapshot.docs[0].data() == null) {
-      return Optional(null);
+      return groupSearchList;
     }
-    Map<String, dynamic> groupMap =
-        snapshot.docs[0].data() as Map<String, dynamic>;
 
-    bool contains = groupMap["members"].contains("${user.id}_${user.username}");
+    List<QueryDocumentSnapshot<Object?>> groupList = snapshot.docs;
 
-    GroupSearch group = GroupSearch(
-      "${groupMap['id']}",
-      "${groupMap['name']}",
-      groupMap['timestamp'],
-      !contains,
-    );
+    for (QueryDocumentSnapshot<Object?> groupSnapshot in groupList) {
+      Map<String, dynamic> groupMap =
+          groupSnapshot.data() as Map<String, dynamic>;
 
-    return Optional(group);
+      bool contains =
+          groupMap["members"].contains("${user.id}_${user.username}");
+
+      GroupSearch group = GroupSearch(
+          "${groupMap['id']}",
+          "${groupMap['name']}",
+          groupMap['timestamp'],
+          !contains,
+          groupMap['owner']);
+
+      groupSearchList.add(group);
+    }
+
+    return groupSearchList;
   }
 
   Future sendMessage(String groupId, String messageContent) async {
