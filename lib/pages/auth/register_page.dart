@@ -38,129 +38,138 @@ class _RegisterPageState extends State<RegisterPage> {
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
                 child: Form(
                   key: formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "FireZup",
-                        style: TextStyle(
-                            fontSize: 40, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      const Text(
-                        "Create your account to start chatting",
-                        style: TextStyle(
-                            fontSize: 10, fontWeight: FontWeight.w400),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      //   Image.asset("assets/login.png"),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        decoration: customInput.copyWith(
-                          labelText: "Username",
-                          prefixIcon: Icon(
-                            Icons.person,
-                            color: Theme.of(context).primaryColor,
+                  child: Center(
+                    child: Container(
+                      constraints: const BoxConstraints(maxWidth: 500),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(
+                            "FireZup",
+                            style: TextStyle(
+                                fontSize: 40, fontWeight: FontWeight.bold),
                           ),
-                        ),
-                        onChanged: (val) {
-                          setState(() => username = val);
-                        },
-                        // check tha validation
-                        validator: (val) {
-                          return ValidationUtils()
-                              .requiredString(val, "username")
-                              .getMessage();
-                        },
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        decoration: customInput.copyWith(
-                          labelText: "Email",
-                          prefixIcon: Icon(
-                            Icons.email,
-                            color: Theme.of(context).primaryColor,
+                          const SizedBox(
+                            height: 10,
                           ),
-                        ),
-                        onChanged: (val) {
-                          setState(() => email = val);
-                        },
-                        // check tha validation
-                        validator: (val) {
-                          return ValidationUtils().isEmail(val).getMessage();
-                        },
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        obscureText: true,
-                        decoration: customInput.copyWith(
-                          labelText: "Password",
-                          prefixIcon: Icon(
-                            Icons.lock,
-                            color: Theme.of(context).primaryColor,
+                          const Text(
+                            "Create your account to start chatting",
+                            style: TextStyle(
+                                fontSize: 10, fontWeight: FontWeight.w400),
                           ),
-                        ),
-                        onChanged: (val) {
-                          setState(() => password = val);
-                        },
-                        validator: (val) {
-                          return ValidationUtils()
-                              .isStrongPassword(val)
-                              .getMessage();
-                        },
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Theme.of(context).primaryColor,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4))),
-                          child: const Text(
-                            "Register",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          const SizedBox(
+                            height: 20,
                           ),
-                          onPressed: () {
-                            register();
-                          },
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text.rich(TextSpan(
-                        text: "Already have an account? ",
-                        style:
-                            const TextStyle(color: Colors.black, fontSize: 14),
-                        children: <TextSpan>[
-                          TextSpan(
-                              text: " Login now",
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  decoration: TextDecoration.underline),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  NavigationService(context)
-                                      .replace(const LoginPage());
-                                }),
+                          //   Image.asset("assets/login.png"),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            decoration: customInput.copyWith(
+                              labelText: "Username",
+                              prefixIcon: Icon(
+                                Icons.person,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            onChanged: (val) {
+                              setState(() => username = val);
+                            },
+                            // check tha validation
+                            validator: (val) {
+                              return ValidationUtils()
+                                  .hasSpecialCharacters(val, "username")
+                                  .getMessage();
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            decoration: customInput.copyWith(
+                              labelText: "Email",
+                              prefixIcon: Icon(
+                                Icons.email,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            onChanged: (val) {
+                              setState(() => email = val);
+                            },
+                            // check tha validation
+                            validator: (val) {
+                              return ValidationUtils()
+                                  .isEmail(val)
+                                  .getMessage();
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          TextFormField(
+                            obscureText: true,
+                            decoration: customInput.copyWith(
+                              labelText: "Password",
+                              prefixIcon: Icon(
+                                Icons.lock,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                            onChanged: (val) {
+                              setState(() => password = val);
+                            },
+                            validator: (val) {
+                              return ValidationUtils()
+                                  .isStrongPassword(val)
+                                  .getMessage();
+                            },
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4))),
+                              child: const Text(
+                                "Register",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                              onPressed: () {
+                                register();
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text.rich(TextSpan(
+                            text: "Already have an account? ",
+                            style: const TextStyle(
+                                color: Colors.black, fontSize: 14),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: " Login now",
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      decoration: TextDecoration.underline),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      NavigationService(context)
+                                          .replace(const LoginPage());
+                                    }),
+                            ],
+                          )),
                         ],
-                      )),
-                    ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -184,6 +193,9 @@ class _RegisterPageState extends State<RegisterPage> {
       SnackBarService(context).error("Something went wrong");
       return;
     }
-    NavigationService(context).replace(const HomePage());
+
+    if (mounted) {
+      NavigationService(context).replace(const HomePage());
+    }
   }
 }
