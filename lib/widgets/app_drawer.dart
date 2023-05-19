@@ -7,6 +7,7 @@ import 'package:firezup/services/auth_service.dart';
 import 'package:firezup/services/navigation_service.dart';
 import 'package:firezup/shared/pages.dart';
 import 'package:firezup/widgets/loading.dart';
+import 'package:firezup/widgets/selection_modal.dart';
 import 'package:flutter/material.dart';
 
 class AppDrawer extends StatefulWidget {
@@ -32,7 +33,6 @@ class _AppDrawerState extends State<AppDrawer> {
           : Column(
               children: <Widget>[
                 Expanded(
-                  // ListView contains a group of widgets that scroll inside the drawer
                   child: ListView(
                     children: <Widget>[
                       UserAccountsDrawerHeader(
@@ -100,66 +100,47 @@ class _AppDrawerState extends State<AppDrawer> {
                     ],
                   ),
                 ),
-                Container(
-                    child: Align(
-                        alignment: FractionalOffset.bottomCenter,
-                        child: Container(
-                            child: Column(
-                          children: <Widget>[
-                            Divider(),
-                            ListTile(
-                              onTap: () async {
-                                showDialog(
-                                    barrierDismissible: false,
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: const Text("Logout"),
-                                        content: const Text(
-                                            "Are you sure you want to logout?"),
-                                        actions: [
-                                          IconButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            icon: const Icon(
-                                              Icons.cancel,
-                                              color: Colors.red,
-                                            ),
-                                          ),
-                                          IconButton(
-                                            onPressed: () async {
-                                              await authService.logout();
+                Align(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: Column(
+                    children: <Widget>[
+                      const Divider(),
+                      ListTile(
+                        onTap: () async {
+                          showDialog(
+                            barrierDismissible: false,
+                            context: context,
+                            builder: (context) {
+                              return SelectionModal(
+                                header: "Logout",
+                                description: "Are you sure you want to logout?",
+                                onDecline: () {
+                                  Navigator.pop(context);
+                                },
+                                onAccept: () async {
+                                  await authService.logout();
 
-                                              NavigationService(context)
-                                                  .replace(const LoginPage());
-
-                                              // Navigator.of(context).pushAndRemoveUntil(
-                                              //     MaterialPageRoute(
-                                              //         builder: (context) => const LoginPage()),
-                                              //     (route) => false);
-                                            },
-                                            icon: const Icon(
-                                              Icons.done,
-                                              color: Colors.green,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              },
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 5),
-                              leading: const Icon(Icons.exit_to_app),
-                              title: const Text(
-                                "Logout",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            )
-                          ],
-                        ))))
+                                  if (mounted) {
+                                    NavigationService(context)
+                                        .replace(const LoginPage());
+                                  }
+                                },
+                              );
+                            },
+                          );
+                        },
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 5),
+                        leading: const Icon(Icons.exit_to_app),
+                        title: const Text(
+                          "Logout",
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    ],
+                  ),
+                )
               ],
             ),
     );
