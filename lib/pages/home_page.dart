@@ -5,6 +5,7 @@ import 'package:firezup/data/optional.dart';
 import 'package:firezup/services/group_service.dart';
 import 'package:firezup/services/user_service.dart';
 import 'package:firezup/shared/pages.dart';
+import 'package:firezup/utils/string_utils.dart';
 import 'package:firezup/widgets/app_drawer.dart';
 import 'package:firezup/widgets/create_group_modal.dart';
 import 'package:firezup/widgets/empty_home_placeholder.dart';
@@ -48,12 +49,13 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         actions: [
           IconButton(
-              onPressed: () {
-                searchGroupModal(context);
-              },
-              icon: const Icon(
-                Icons.search,
-              ))
+            onPressed: () {
+              searchGroupModal(context);
+            },
+            icon: const Icon(
+              Icons.search,
+            ),
+          )
         ],
         elevation: 0,
         centerTitle: true,
@@ -109,6 +111,11 @@ class _HomePageState extends State<HomePage> {
             Map<String, dynamic> lastMessageMap =
                 docs[reverseIndex].data()["lastMessage"];
 
+            String userId = "";
+            if (userOptional.exists()) {
+              userId = userOptional.get()!.id;
+            }
+
             Message? lastMessage;
             if (lastMessageMap.isNotEmpty) {
               lastMessage = Message(
@@ -116,6 +123,7 @@ class _HomePageState extends State<HomePage> {
                 "${lastMessageMap['content']}",
                 "${lastMessageMap['owner']}",
                 lastMessageMap['timestamp'],
+                StringUtils.splitID(lastMessageMap['owner']) == userId,
               );
             }
             Optional<Message> lastMessageOptional = Optional(lastMessage);

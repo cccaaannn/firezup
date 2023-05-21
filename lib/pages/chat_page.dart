@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firezup/data/app_user.dart';
 import 'package:firezup/data/message.dart';
 import 'package:firezup/data/optional.dart';
 import 'package:firezup/pages/group_info.dart';
 import 'package:firezup/services/group_service.dart';
 import 'package:firezup/services/navigation_service.dart';
-import 'package:firezup/utils/validation_utils.dart';
+import 'package:firezup/services/user_service.dart';
+import 'package:firezup/utils/string_utils.dart';
 import 'package:firezup/widgets/custom_input.dart';
 import 'package:firezup/widgets/message_tile.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +22,12 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  TextEditingController messageTextController = TextEditingController();
-  GroupService groupService = GroupService();
+  final TextEditingController messageTextController = TextEditingController();
+  ScrollController scrollController = ScrollController();
+  final GroupService groupService = GroupService();
+  final UserService userService = UserService();
+
+  Optional<AppUser> userOptional = Optional(null);
   Stream<QuerySnapshot<Object?>>? messagesSnapshot;
 
   String newMessage = "";
@@ -36,6 +42,9 @@ class _ChatPageState extends State<ChatPage> {
     Stream<QuerySnapshot<Object?>> snapshot =
         await groupService.getGroupMessagesSnapshot(widget.groupId);
     setState(() => messagesSnapshot = snapshot);
+
+    userOptional = await userService.getActiveUser();
+    setState(() => userOptional = userOptional);
   }
 
   @override
@@ -57,7 +66,10 @@ class _ChatPageState extends State<ChatPage> {
       ),
       body: Stack(
         children: <Widget>[
-          getMessages(),
+          Container(
+            margin: const EdgeInsets.only(bottom: 65),
+            child: getMessages(),
+          ),
           Container(
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width,
@@ -105,18 +117,29 @@ class _ChatPageState extends State<ChatPage> {
           return Container();
         }
 
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollToBottom();
+        });
+
         return ListView.builder(
+          controller: scrollController,
           itemCount: snapshot.data.docs.length,
           itemBuilder: (context, index) {
-            Map<String, dynamic> messageDetail = docs[index].data();
+            Map<String, dynamic> messageMap = docs[index].data();
+
+            String userId = "";
+            if (userOptional.exists()) {
+              userId = userOptional.get()!.id;
+            }
 
             Message? message;
-            if (messageDetail.isNotEmpty) {
+            if (messageMap.isNotEmpty) {
               message = Message(
-                "${messageDetail['id']}",
-                "${messageDetail['content']}",
-                "${messageDetail['owner']}",
-                messageDetail['timestamp'],
+                "${messageMap['id']}",
+                "${messageMap['content']}",
+                "${messageMap['owner']}",
+                messageMap['timestamp'],
+                StringUtils.splitID(messageMap['owner']) == userId,
               );
             }
             Optional<Message> messageOptional = Optional(message);
@@ -133,8 +156,26 @@ class _ChatPageState extends State<ChatPage> {
   void sendMessage() async {
     if (newMessage != "") {
       await groupService.sendMessage(widget.groupId, newMessage);
-      setState(() => newMessage = "");
+      setState(
+        () {
+          newMessage = "";
+          scrollToBottom();
+        },
+      );
       messageTextController.clear();
+    }
+  }
+
+  void scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(
+        scrollController.position.maxScrollExtent,
+      );
+      //   scrollController.animateTo(
+      //     scrollController.position.maxScrollExtent,
+      //     curve: Curves.easeOut,
+      //     duration: const Duration(milliseconds: 500),
+      //   );
     }
   }
 }
