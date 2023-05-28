@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firezup/data/group.dart';
+import 'package:firezup/data/group_info.dart';
 import 'package:firezup/data/group_search.dart';
 import 'package:firezup/services/user_service.dart';
 import 'package:firezup/shared/db_collections.dart';
@@ -43,6 +44,30 @@ class GroupService {
         .collection("messages")
         .orderBy("timestamp")
         .snapshots();
+  }
+
+  Future<Stream<DocumentSnapshot<Object?>>> getGroupMembersSnapshot(
+      String groupId) async {
+    return groupCollection.doc(groupId).snapshots();
+  }
+
+  Future<Optional<GroupInfo>> getGroupById(String groupId) async {
+    DocumentReference userDoc = groupCollection.doc(groupId);
+
+    DocumentSnapshot<Object?> groupDocSnapshot = await userDoc.get();
+
+    if (!groupDocSnapshot.exists) {
+      return Optional(null);
+    }
+
+    GroupInfo groupInfo = GroupInfo(
+      groupDocSnapshot.id,
+      groupDocSnapshot.get("name"),
+      groupDocSnapshot.get("timestamp"),
+      groupDocSnapshot.get("owner"),
+    );
+
+    return Optional(groupInfo);
   }
 
   Future<Optional<Group>> createGroup(String groupName) async {
