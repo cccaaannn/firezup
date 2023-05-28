@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firezup/data/app_user.dart';
 import 'package:firezup/data/message.dart';
 import 'package:firezup/data/optional.dart';
-import 'package:firezup/pages/group_info.dart';
+import 'package:firezup/pages/group_info_page.dart';
 import 'package:firezup/services/group_service.dart';
 import 'package:firezup/services/navigation_service.dart';
 import 'package:firezup/services/user_service.dart';
@@ -58,7 +58,12 @@ class _ChatPageState extends State<ChatPage> {
         actions: [
           IconButton(
             onPressed: () {
-              NavigationService(context).next(const GroupInfo());
+              NavigationService(context).next(
+                GroupInfoPage(
+                  groupId: widget.groupId,
+                  groupName: widget.groupName,
+                ),
+              );
             },
             icon: const Icon(Icons.info_outline),
           )
