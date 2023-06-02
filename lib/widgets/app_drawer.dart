@@ -2,7 +2,7 @@ import 'package:firezup/data/app_user.dart';
 import 'package:firezup/data/optional.dart';
 import 'package:firezup/pages/auth/login_page.dart';
 import 'package:firezup/pages/home_page.dart';
-import 'package:firezup/pages/profile_page.dart';
+import 'package:firezup/pages/account_page.dart';
 import 'package:firezup/services/auth_service.dart';
 import 'package:firezup/services/navigation_service.dart';
 import 'package:firezup/shared/pages.dart';
@@ -23,7 +23,7 @@ class AppDrawer extends StatefulWidget {
 
 class _AppDrawerState extends State<AppDrawer> {
   final AuthService authService = AuthService();
-  final AppUser fallbackUser = AppUser("", "", "");
+  final AppUser loadingUser = AppUser("", "", "");
 
   @override
   Widget build(BuildContext context) {
@@ -37,10 +37,10 @@ class _AppDrawerState extends State<AppDrawer> {
                     children: <Widget>[
                       UserAccountsDrawerHeader(
                         accountEmail: Text(widget.userOptional
-                            .getOrDefault(fallbackUser)
+                            .getOrDefault(loadingUser)
                             .email),
                         accountName: Text(widget.userOptional
-                            .getOrDefault(fallbackUser)
+                            .getOrDefault(loadingUser)
                             .username),
                         currentAccountPictureSize: const Size(60, 60),
                         decoration: BoxDecoration(
@@ -52,7 +52,7 @@ class _AppDrawerState extends State<AppDrawer> {
                               Theme.of(context).colorScheme.secondary,
                           child: Text(
                             widget.userOptional
-                                .getOrDefault(fallbackUser)
+                                .getOrDefault(loadingUser)
                                 .username
                                 .substring(0, 1)
                                 .toUpperCase(),
@@ -88,12 +88,12 @@ class _AppDrawerState extends State<AppDrawer> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 5),
                         selected:
-                            widget.selectedPage.index == AppPages.profile.index,
+                            widget.selectedPage.index == AppPages.account.index,
                         leading: const Icon(
                           Icons.person,
                         ),
                         title: const Text(
-                          "Profile",
+                          "Account",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),

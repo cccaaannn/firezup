@@ -1,1 +1,1 @@
-enum AppPages { home, profile }
+enum AppPages { home, account }
