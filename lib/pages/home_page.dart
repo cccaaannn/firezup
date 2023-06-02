@@ -62,8 +62,6 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).primaryColor,
         title: const Text(
           "Home",
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 27),
         ),
       ),
       drawer:

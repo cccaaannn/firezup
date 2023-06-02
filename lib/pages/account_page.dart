@@ -3,6 +3,7 @@ import 'package:firezup/data/optional.dart';
 import 'package:firezup/services/user_service.dart';
 import 'package:firezup/shared/pages.dart';
 import 'package:firezup/widgets/app_drawer.dart';
+import 'package:firezup/widgets/account_info_user_tile.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -14,6 +15,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final UserService userService = UserService();
+  final AppUser loadingUser = AppUser("", "?", "?");
   Optional<AppUser> userOptional = Optional(null);
 
   @override
@@ -31,18 +33,22 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
         title: const Text(
-          "Profile",
-          style: TextStyle(
-              color: Colors.white, fontWeight: FontWeight.bold, fontSize: 27),
+          "Account",
         ),
       ),
       drawer:
-          AppDrawer(userOptional: userOptional, selectedPage: AppPages.profile),
-      body: const Text("Hello"),
+          AppDrawer(userOptional: userOptional, selectedPage: AppPages.account),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        child: AccountInfoUserTile(
+          username: userOptional.getOrDefault(loadingUser).username,
+          email: userOptional.getOrDefault(loadingUser).email,
+        ),
+      ),
     );
   }
 }
