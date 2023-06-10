@@ -5,11 +5,11 @@ import 'package:firezup/utils/validation_utils.dart';
 import 'package:firezup/data/app_user.dart';
 import 'package:firezup/data/optional.dart';
 import 'package:firezup/services/auth_service.dart';
-import 'package:firezup/widgets/custom_input.dart';
+import 'package:firezup/widgets/input/custom_input.dart';
 import 'package:firezup/services/navigation_service.dart';
 import 'package:firezup/services/snackbar_service.dart';
 import 'package:firezup/pages/home_page.dart';
-import 'package:firezup/widgets/scaffold_loading.dart';
+import 'package:firezup/widgets/util/scaffold_loading.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

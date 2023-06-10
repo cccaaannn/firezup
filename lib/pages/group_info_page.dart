@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firezup/data/group_info.dart';
 import 'package:firezup/data/optional.dart';
 import 'package:firezup/services/group_service.dart';
-import 'package:firezup/utils/string_utils.dart';
-import 'package:firezup/widgets/group_info_user_tile.dart';
+import 'package:firezup/widgets/tile/group_info_user_tile.dart';
 import 'package:flutter/material.dart';
 
 class GroupInfoPage extends StatefulWidget {

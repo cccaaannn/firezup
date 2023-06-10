@@ -2,8 +2,8 @@ import 'package:firezup/data/app_user.dart';
 import 'package:firezup/data/optional.dart';
 import 'package:firezup/services/user_service.dart';
 import 'package:firezup/shared/pages.dart';
-import 'package:firezup/widgets/app_drawer.dart';
-import 'package:firezup/widgets/account_info_user_tile.dart';
+import 'package:firezup/widgets/drawer/app_drawer.dart';
+import 'package:firezup/widgets/tile/account_info_user_tile.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {

@@ -7,8 +7,8 @@ import 'package:firezup/services/group_service.dart';
 import 'package:firezup/services/navigation_service.dart';
 import 'package:firezup/services/user_service.dart';
 import 'package:firezup/utils/string_utils.dart';
-import 'package:firezup/widgets/custom_input.dart';
-import 'package:firezup/widgets/message_tile.dart';
+import 'package:firezup/widgets/input/custom_input.dart';
+import 'package:firezup/widgets/tile/message_tile.dart';
 import 'package:flutter/material.dart';
 
 class ChatPage extends StatefulWidget {

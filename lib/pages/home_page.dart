@@ -6,12 +6,12 @@ import 'package:firezup/services/group_service.dart';
 import 'package:firezup/services/user_service.dart';
 import 'package:firezup/shared/pages.dart';
 import 'package:firezup/utils/string_utils.dart';
-import 'package:firezup/widgets/app_drawer.dart';
-import 'package:firezup/widgets/create_group_modal.dart';
-import 'package:firezup/widgets/empty_home_placeholder.dart';
-import 'package:firezup/widgets/group_tile.dart';
-import 'package:firezup/widgets/loading.dart';
-import 'package:firezup/widgets/search_group_modal.dart';
+import 'package:firezup/widgets/drawer/app_drawer.dart';
+import 'package:firezup/widgets/modal/create_group_modal.dart';
+import 'package:firezup/widgets/util/empty_home_placeholder.dart';
+import 'package:firezup/widgets/tile/group_tile.dart';
+import 'package:firezup/widgets/util/loading.dart';
+import 'package:firezup/widgets/modal/search_group_modal.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
