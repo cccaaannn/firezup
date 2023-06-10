@@ -10,62 +10,30 @@ class SnackBarService {
       title: 'Success',
       message: message,
       duration: const Duration(seconds: 3),
+      backgroundColor: Theme.of(context).primaryColor,
+      flushbarPosition: FlushbarPosition.TOP,
     ).show(context);
   }
-//   void success(String message) {
-//     if (!context.mounted) return;
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       SnackBar(
-//         content: Text(
-//           message,
-//           style: const TextStyle(fontSize: 14),
-//         ),
-//         backgroundColor: Colors.green,
-//         duration: const Duration(seconds: 2),
-//         action: SnackBarAction(
-//           label: "SUCCESS",
-//           onPressed: () {},
-//           textColor: Colors.white,
-//         ),
-//       ),
-//     );
-//   }
 
   void warning(String message) {
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: const TextStyle(fontSize: 14),
-        ),
-        backgroundColor: Colors.yellow,
-        duration: const Duration(seconds: 2),
-        action: SnackBarAction(
-          label: "WARNING",
-          onPressed: () {},
-          textColor: Colors.white,
-        ),
-      ),
-    );
+    Flushbar(
+      title: 'Warning',
+      message: message,
+      duration: const Duration(seconds: 3),
+      backgroundColor: Colors.yellow.shade600,
+      titleColor: Colors.black,
+      messageColor: Colors.black,
+      flushbarPosition: FlushbarPosition.TOP,
+    ).show(context);
   }
 
   void error(String message) {
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message,
-          style: const TextStyle(fontSize: 14),
-        ),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 2),
-        action: SnackBarAction(
-          label: "ERROR",
-          onPressed: () {},
-          textColor: Colors.white,
-        ),
-      ),
-    );
+    Flushbar(
+      title: 'Error',
+      message: message,
+      duration: const Duration(seconds: 3),
+      backgroundColor: Colors.red,
+      flushbarPosition: FlushbarPosition.TOP,
+    ).show(context);
   }
 }
