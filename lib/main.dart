@@ -9,7 +9,7 @@ import 'utils/app_firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load();
+  await dotenv.load(fileName: "dotenv");
 
   await Firebase.initializeApp(
     options: AppFirebaseOptions.getForCurrentPlatform(),
