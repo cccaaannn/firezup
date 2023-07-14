@@ -18,6 +18,9 @@ jobs:
 
       - name: Use flutter action
         uses: subosito/flutter-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: ${{ github.repository_owner }}
 
       - name: Build and deploy flutter web app
         run: |
