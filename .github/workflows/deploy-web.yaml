@@ -3,16 +3,27 @@ on:
   push:
     branches:
       - master
+
 jobs:
-  build:    
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: subosito/flutter-action@v2
-      - run: flutter build web --release --base-href /flutter_web/
-      - run: git config user.name github-actions
-      - run: git config user.email github-actions@github.com
-      - run: git --work-tree build/web add --all
-      - run: git commit -m "Automatic deployment by github-actions"
-      - run: git push origin HEAD:gh-pages --force
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Use flutter action
+        uses: subosito/flutter-action@v2
+
+      - name: Build and deploy flutter web app
+        run: |
+          flutter build web --release --base-href /flutter_web/
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git --work-tree build/web add --all
+          git commit -m "Automatic deployment by github-actions"
+          git push origin HEAD:gh-pages --force
