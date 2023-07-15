@@ -8,6 +8,9 @@ Group chat application with firebase.
 
 ## Running for development
 1. Get packages `flutter packages get`.
-2. Add firebase configurations to `.env` file using `.env.template` as a template. 
+2. Add firebase configurations to `dotenv` file using `dotenv.template` as a template. (.env not works with web when deployed)
 3. Run application `flutter run`.
     - For chrome `flutter run -d chrome`.
+
+## Example web deployment
+[cccaaannn.github.io/firezup](https://cccaaannn.github.io/firezup/)
